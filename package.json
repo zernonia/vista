@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@ffmpeg/core": "^0.11.0",
+    "@ffmpeg/ffmpeg": "^0.11.6",
+    "@nuxt/image-edge": "^1.0.0-27840416.dc1ed65",
+    "@nuxtjs/supabase": "^0.3.0",
+    "@unocss/nuxt": "^0.47.6",
+    "@unocss/preset-icons": "^0.47.6",
+    "@unocss/preset-typography": "^0.47.6",
+    "@unocss/preset-uno": "^0.47.6",
+    "@unocss/reset": "^0.47.6",
+    "@unocss/transformer-directives": "^0.47.6",
+    "@vueuse/core": "^9.6.0",
+    "@vueuse/integrations": "^9.6.0",
+    "@vueuse/nuxt": "^9.6.0",
+    "nuxt": "3.0.0"
+  }
+}
