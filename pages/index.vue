@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import Konva from "konva";
 import { useFileSystemAccess } from "@vueuse/core";
-import { useMediaControls } from "@vueuse/core";
-
 import html2canvas from "html2canvas";
 
 const { file, fileMIME, open } = useFileSystemAccess({
@@ -22,123 +19,12 @@ const url = computed(() => (file.value ? URL.createObjectURL(file.value) : undef
 const { transcode, video: result } = useTranscode();
 
 const videoRef = ref<HTMLVideoElement>();
-const canvasRef = ref<HTMLCanvasElement>();
-
-const previousTime = ref(0);
-const { playing, currentTime, ended } = useMediaControls(videoRef, {
-  src: "video.mp4",
-});
-
-let stage: Konva.Stage;
-let layer: Konva.Layer;
-
-let image: Konva.Image;
-let shape: Konva.Image;
-
-const togglePause = (val: boolean) => {
-  if (val) {
-    recorder.pause();
-    playing.value = false;
-  } else {
-    recorder.resume();
-    playing.value = true;
-  }
-};
-
-const play = async () => {
-  await renderDOM();
-  recorder.start(100);
-
-  const step = async () => {
-    if (ended.value) {
-      return;
-    }
-    layer.draw();
-    togglePause(true);
-    await renderDOM();
-    togglePause(false);
-    requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-};
 
 const loadedVideo = () => {
-  if (!videoRef.value || !canvasRef.value) return;
-
-  const width = videoRef.value.videoWidth;
-  const height = videoRef.value.videoHeight;
-  const ratio = width / height;
-
-  const canvasWidth = canvasRef.value.getBoundingClientRect().width;
-  const canvasHeight = canvasWidth / ratio;
-
-  stage = new Konva.Stage({
-    container: "canvas",
-    width: canvasWidth,
-    height: canvasHeight,
-  });
-
-  layer = new Konva.Layer();
-  stage.add(layer);
-
-  // image = new Konva.Image({
-  //   image: videoRef.value,
-  //   x: 0,
-  //   y: 0,
-  // });
-
-  // layer.add(image);
-
-  // image.width(canvasWidth);
-  // image.height(canvasHeight);
-
-  // @ts-expect-error
-  shape = new Konva.Image({
-    x: 30,
-    y: canvasHeight - 100,
-    draggable: true,
-  });
-  layer.add(shape);
+  // once loaded we save to Supabase and transcribe
 };
 
 const domRef = ref<HTMLDivElement>();
-const renderDOM = async () => {
-  try {
-    if (!domRef.value) return;
-    if (currentTime.value - previousTime.value > 0.5) {
-      const c = await html2canvas(domRef.value, { backgroundColor: null });
-      shape.image(c);
-      previousTime.value = currentTime.value;
-      console.log(currentTime.value, previousTime.value);
-    }
-  } catch (err) {
-    throw err;
-  }
-};
-
-const overlay = ref<Blob>();
-const recording_url = ref("");
-const chunks: any[] = [];
-let recorder: MediaRecorder;
-const stream = () => {
-  play();
-
-  const c = layer.getCanvas()._canvas;
-  const s = c.captureStream(30);
-  recorder = new MediaRecorder(s, { mimeType: "video/webm;codecs=vp9" });
-
-  recorder.ondataavailable = (ev) => chunks.push(ev.data);
-
-  recorder.onstop = () => {
-    var blob = new Blob(chunks, { type: "video/webm" });
-    overlay.value = blob;
-    recording_url.value = URL.createObjectURL(overlay.value);
-  };
-};
-
-watch(ended, (n) => {
-  if (n) recorder.stop();
-});
 
 const transcribe = [
   {
@@ -207,7 +93,6 @@ const groupedTranscribe = computed(() =>
 );
 
 const step = ref(0);
-
 const blobs = ref<Blob[]>([]);
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -250,21 +135,17 @@ const contructUrl = (blob: Blob) => URL.createObjectURL(blob);
     </div>
 
     <video muted ref="videoRef" :src="url" width="500" @loadedmetadata="loadedVideo"></video>
-    <div ref="canvasRef" id="canvas" class="border max-w-screen-md mx-auto"></div>
+
     <button class="btn btn-plain" @click="open()">Select</button>
     <button class="btn btn-primary" :disabled="!file" @click="transcode(file, blobs, groupedTranscribe.flat())">
       Transcode
     </button>
-    <button class="btn btn-primary" :disabled="!file" @click="play">Play</button>
-
-    <button class="btn btn-primary" :disabled="!file" @click="stream">Stream</button>
 
     <button class="btn btn-primary" @click="magicClick">Magic</button>
 
     <div>
       <h1>Transcode</h1>
-      <video v-if="recording_url" autoplay :src="recording_url" loop width="500"></video>
-      <video v-if="result" autoplay :src="result" loop width="500"></video>
+      <video v-if="result" controls :src="result" loop width="500"></video>
     </div>
 
     <div>

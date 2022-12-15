@@ -12,7 +12,6 @@
     "@ffmpeg/ffmpeg": "^0.11.6",
     "@nuxt/image-edge": "^1.0.0-27840416.dc1ed65",
     "@nuxtjs/supabase": "^0.3.0",
-    "@types/fabric": "^4.5.14",
     "@unocss/nuxt": "^0.47.6",
     "@unocss/preset-icons": "^0.47.6",
     "@unocss/preset-typography": "^0.47.6",
@@ -22,10 +21,7 @@
     "@vueuse/core": "^9.6.0",
     "@vueuse/integrations": "^9.6.0",
     "@vueuse/nuxt": "^9.6.0",
-    "animejs": "^3.2.1",
-    "fabric": "^5.2.4",
     "html2canvas": "^1.4.1",
-    "konva": "^8.3.14",
     "nuxt": "3.0.0"
   }
 }
