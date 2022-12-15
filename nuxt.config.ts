@@ -2,7 +2,7 @@ import transformerDirective from "@unocss/transformer-directives";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  modules: ["@unocss/nuxt", "@vueuse/nuxt", "@nuxt/image-edge"],
+  modules: ["@unocss/nuxt", "@vueuse/nuxt", "@nuxtjs/supabase", "@nuxt/image-edge"],
   css: ["@unocss/reset/tailwind.css", "~~/assets/main.css"],
   runtimeConfig: {
     public: {
@@ -29,4 +29,5 @@ export default defineNuxtConfig({
   image: {
     domains: ["avatars0.githubusercontent.com", "avatars.githubusercontent.com/", "images.unsplash.com/"],
   },
+  ssr: false,
 });
