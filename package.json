@@ -5,7 +5,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "codegen": "supabase gen types typescript --linked > ./utils/database.types.ts"
   },
   "devDependencies": {
     "@ffmpeg/core": "^0.11.0",
@@ -23,6 +24,7 @@
     "@vueuse/integrations": "^9.6.0",
     "@vueuse/nuxt": "^9.6.0",
     "html2canvas": "^1.4.1",
-    "nuxt": "3.0.0"
+    "nuxt": "3.0.0",
+    "vue3-colorpicker": "^2.0.11"
   }
 }

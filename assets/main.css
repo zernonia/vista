@@ -1,3 +1,10 @@
 img {
   @apply inline-block;
 }
+
+input {
+  @apply w-full border px-2 py-1;
+}
+label {
+  @apply text-sm mt-2 mb-1;
+}

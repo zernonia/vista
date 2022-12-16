@@ -14,10 +14,6 @@ export const useTranscode = () => {
     });
   });
 
-  onUnmounted(() => {
-    ffmpeg?.exit();
-  });
-
   const transcode = async (file?: File | Blob, overlay?: Blob[], transcribe?: any) => {
     try {
       if (!file || !overlay || !transcribe) return;

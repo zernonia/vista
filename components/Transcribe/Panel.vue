@@ -11,13 +11,11 @@ const { currentTime } = usePlayback();
 
 <template>
   <div class="w-full">
-    <h2>Transcribe</h2>
-
     <ul v-for="transcribes in chunk">
       <li class="p-2 border mb-2" @click="currentTime = transcribes[0].start / 1000">
         <div class="flex justify-between text-sm mb-2">
           <span>{{ transcribes[0].start / 1000 }}</span>
-          <span>{{ transcribes[transcribes.length - 1].end / 10000 }}</span>
+          <span>{{ transcribes[transcribes.length - 1].end / 1000 }}</span>
         </div>
         <span v-for="transcribe in transcribes">{{ transcribe.text }}&nbsp;</span>
       </li>

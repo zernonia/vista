@@ -2,6 +2,8 @@
 
 <template>
   <div class="bg-white">
-    <slot></slot>
+    <div class="p-12 max-w-screen-lg mx-auto">
+      <slot></slot>
+    </div>
   </div>
 </template>
