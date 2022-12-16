@@ -422,7 +422,14 @@
     regenerator-runtime "^0.13.7"
     resolve-url "^0.2.1"
 
-"@iconify/types@^2.0.0":
+"@iconify-json/bx@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@iconify-json/bx/-/bx-1.1.5.tgz#96108048e64f1becedc1858bd90a9f138fb2faea"
+  integrity sha512-pP2LUm3lByMv8SttId7n1bP8jjgmYt1n01kDgdQKD1PNeCN+REFNUA/0hK/ZYP13C1tfNAQ0gTmxgLTPwH27/A==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify/types@*", "@iconify/types@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@iconify/types/-/types-2.0.0.tgz#ab0e9ea681d6c8a1214f30cd741fe3a20cc57f57"
   integrity sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==

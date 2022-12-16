@@ -10,6 +10,7 @@
   "devDependencies": {
     "@ffmpeg/core": "^0.11.0",
     "@ffmpeg/ffmpeg": "^0.11.6",
+    "@iconify-json/bx": "^1.1.5",
     "@nuxt/image-edge": "^1.0.0-27840416.dc1ed65",
     "@nuxtjs/supabase": "^0.3.0",
     "@unocss/nuxt": "^0.47.6",

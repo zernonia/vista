@@ -5,6 +5,8 @@ export const useTranscode = () => {
   let ffmpeg: FFmpeg;
   const message = ref("Click Start to Transcode");
   const video = ref<string>();
+  const { config } = useConfig();
+  const { ratio } = usePlayback();
 
   onMounted(() => {
     ffmpeg = createFFmpeg({
@@ -42,9 +44,9 @@ export const useTranscode = () => {
             overlay
               .map(
                 (b, i) =>
-                  `[${i === 0 ? "0:v" : "v" + i}][${i + 1}:v]overlay=100:700:enable='between(t,${
-                    transcribe[i].start / 1000
-                  },${transcribe[i].end / 1000})'[v${i + 1}]`
+                  `[${i === 0 ? "0:v" : "v" + i}][${i + 1}:v]overlay=${config.value.style.left * ratio.value}:${
+                    config.value.style.top * ratio.value
+                  }:enable='between(t,${transcribe[i].start / 1000},${transcribe[i].end / 1000})'[v${i + 1}]`
               )
               .join("; "),
           ]
