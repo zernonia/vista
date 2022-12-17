@@ -77,7 +77,7 @@ export const useTranscode = () => {
       video.value = URL.createObjectURL(new Blob([data.buffer], { type: "video/mp4" }));
 
       const end_time = new Date().getTime();
-      console.log("Time taken", end_time - start_time / 1000 / 60, "minutes");
+      console.log("Time taken", (end_time - start_time) / 1000 / 60, "minutes");
     } catch (err) {
       console.log(err);
     }

@@ -25,9 +25,9 @@ defineExpose({ el });
 </script>
 
 <template>
-  <p class="absolute" ref="el" :style="computedStyle" v-if="activeTranscribe">
+  <p class="absolute text-shadow-sm" ref="el" :style="computedStyle" v-if="activeTranscribe">
     <span
-      :style="activeTranscribe?.text === transribe.text ? computedHighlightStyle : undefined"
+      :style="activeTranscribe?.start === transribe.start ? computedHighlightStyle : undefined"
       v-for="transribe in currentChunk"
       >{{ transribe.text }}&nbsp;</span
     >

@@ -24,7 +24,7 @@ serve(async (req) => {
     await supabaseClient
       .from("projects")
       .update({
-        transcription: jsonData,
+        words: jsonData.words,
       })
       .eq("transcription_id", transcript_id);
 
@@ -37,3 +37,5 @@ serve(async (req) => {
     });
   }
 });
+
+// supabase functions deploy transcribe-webhook --no-verify-jwt

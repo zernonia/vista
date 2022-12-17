@@ -15,9 +15,10 @@ const { file, fileName, open } = useFileSystemAccess({
 const user = useSupabaseUser();
 const client = useSupabase();
 
-const el = ref<HTMLVideoElement>();
-const { duration } = useMediaControls(el);
+const { el, duration, playing } = usePlayback();
 const inMemoryFile = useInMemoryFile();
+
+const isOffLimit = computed(() => duration.value >= 15);
 
 const url = computed(() => (file.value ? URL.createObjectURL(file.value) : undefined));
 
@@ -55,14 +56,19 @@ const uploadToStorage = async () => {
 
 <template>
   <div>
-    <button v-if="!file" @click="open()">select or drop file</button>
+    <button @click="open()">select or drop file</button>
 
-    <div v-else>
-      <video ref="el" :src="url"></video>
+    <div v-if="file" class="flex flex-col items-center">
+      <div class="max-w-screen-md m-auto">
+        <button @click="playing = !playing">
+          <video ref="el" class="border rounded-3xl max-h-screen-sm" :src="url"></video>
+        </button>
+        <PreviewControls></PreviewControls>
+      </div>
 
-      {{ duration }}
+      <div v-if="isOffLimit" class="text-red font-semibold my-4">Video is too long, currently only max 15 seconds.</div>
 
-      <button @click="uploadToStorage">Upload</button>
+      <button :disabled="isOffLimit" @click="uploadToStorage" class="btn-primary mt-12">Upload</button>
     </div>
   </div>
 </template>

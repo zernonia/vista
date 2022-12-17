@@ -2,15 +2,16 @@
 import html2canvas from "html2canvas";
 import { chunk } from "@/utils/functions";
 import type { PropType } from "vue";
-import type { Transcribe } from "@/utils/interface";
 
 const props = defineProps({
   video: { type: Object as PropType<Blob | File> },
-  transcribe: { type: Object as PropType<Transcribe[]>, default: [] },
 });
+const emits = defineEmits(["save"]);
 
-const { video, transcribe } = toRefs(props);
+const { video } = toRefs(props);
 
+const transcribe = useTranscription();
+const client = useSupabase();
 const { transcode, video: result } = useTranscode();
 const { computedStyle, computedHighlightStyle } = useConfig();
 const { ratio } = usePlayback();
@@ -49,6 +50,7 @@ const magicClick = async () => {
 };
 
 const handleTranscode = async () => {
+  emits("save");
   await magicClick();
   transcode(video?.value, blobs.value, groupedTranscribe.value.flat());
 };
@@ -58,7 +60,7 @@ const tab = ref<"config" | "transcribe">("config");
 
 <template>
   <div>
-    <div ref="domRef" class="absolute -z-1" :style="[computedStyle, { transform: `scale(${ratio})` }]">
+    <div ref="domRef" class="absolute text-shadow-sm -z-1" :style="[computedStyle, { transform: `scale(${ratio})` }]">
       <span
         :style="item.text === transcribe[step].text ? computedHighlightStyle : undefined"
         v-for="item in groupedTranscribe.find((i) => i.find((j) => j.text === transcribe[step].text))"
@@ -67,14 +69,28 @@ const tab = ref<"config" | "transcribe">("config");
     </div>
 
     <div class="flex flex-col-reverse md:flex-row">
-      <div class="mr-6 flex-1">
-        <div>
-          <button class="btn-primary" @click="tab = 'config'">Style</button>
-          <button class="btn-primary" @click="tab = 'transcribe'">Subtitle</button>
+      <div class="flex flex-col mr-6 mt-20 w-full">
+        <div class="grid grid-cols-2 rounded-full bg-gray-100 p-1.5 mx-6 overflow-hidden">
+          <button
+            class="btn"
+            :class="[tab == 'config' ? 'bg-white py-4 text-blue-500 shadow-xl shadow-gray-200' : 'text-gray-300']"
+            @click="tab = 'config'"
+          >
+            Style
+          </button>
+          <button
+            class="btn"
+            :class="[tab == 'transcribe' ? 'bg-white py-4 text-blue-500 shadow-xl shadow-gray-200' : 'text-gray-300']"
+            @click="tab = 'transcribe'"
+          >
+            Subtitle
+          </button>
         </div>
-        <div class="mt-2">
-          <TranscribeConfig v-if="tab === 'config'"></TranscribeConfig>
-          <TranscribePanel v-if="tab === 'transcribe'" :chunks="groupedTranscribe"></TranscribePanel>
+        <div class="mt-6 rounded-3xl mt-4 px-8 py-10 h-min drop-shadow-2xl drop-shadow-color-gray-200 bg-white">
+          <div>
+            <TranscribeConfig v-if="tab === 'config'"></TranscribeConfig>
+            <TranscribeSubtitle v-if="tab === 'transcribe'" :chunks="groupedTranscribe"></TranscribeSubtitle>
+          </div>
         </div>
       </div>
       <div>
@@ -85,13 +101,7 @@ const tab = ref<"config" | "transcribe">("config");
       </div>
     </div>
 
+    <button class="btn btn-primary" @click="emits('save')">Save</button>
     <button class="btn btn-primary" @click="handleTranscode">Transcode</button>
-
-    <div>
-      <h1>Transcode</h1>
-      <video v-if="result" controls :src="result" loop width="500"></video>
-    </div>
-
-    <User></User>
   </div>
 </template>

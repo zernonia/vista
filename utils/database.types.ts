@@ -15,30 +15,30 @@ export interface Database {
           user_id: string | null
           created_at: string | null
           video_key: string | null
-          srt_key: string | null
-          config: Json | null
           transcription_id: string | null
-          transcription: Json | null
+          words: Json[] | null
+          title: string | null
+          config: Json | null
         }
         Insert: {
           id?: string
           user_id?: string | null
           created_at?: string | null
           video_key?: string | null
-          srt_key?: string | null
-          config?: Json | null
           transcription_id?: string | null
-          transcription?: Json | null
+          words?: Json[] | null
+          title?: string | null
+          config?: Json | null
         }
         Update: {
           id?: string
           user_id?: string | null
           created_at?: string | null
           video_key?: string | null
-          srt_key?: string | null
-          config?: Json | null
           transcription_id?: string | null
-          transcription?: Json | null
+          words?: Json[] | null
+          title?: string | null
+          config?: Json | null
         }
       }
       users: {

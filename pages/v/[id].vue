@@ -1,34 +1,46 @@
 <script setup lang="ts">
-import { file } from "@babel/types";
-
 const client = useSupabase();
 const inMemoryFile = useInMemoryFile();
+const transcribe = useTranscription();
+const { config } = useConfig();
 
 const channel = client
   .channel("public:projects")
   .on("postgres_changes", { event: "UPDATE", schema: "public", table: "projects" }, (payload) => {
     // @ts-ignore
     data.value = payload.new;
-    transcribe.value = payload.new.transcription.words;
+    transcribe.value = payload.new.words;
     console.log(payload);
   })
   .subscribe();
 
 const video = ref<Blob | File>();
-const transcribe = ref([]);
 
 const id = useRoute().params.id.toString();
 const { data } = useAsyncData(async () => {
   const { data } = await client.from("projects").select("*").eq("id", id).single();
 
   // if transcription ready, remove websocket
-  if (data?.transcription) {
-    // @ts-expect-error
-    transcribe.value = data.transcription.words;
+  if (data?.words) {
+    // @ts-ignore
+    transcribe.value = data.words;
+    // @ts-ignore
+    if (data.config) config.value = data.config;
     client.removeChannel(channel);
   }
   return data;
 });
+
+const handleSave = async () => {
+  await client
+    .from("projects")
+    .update({
+      // @ts-ignore
+      words: transcribe.value,
+      config: config.value,
+    })
+    .eq("id", id);
+};
 
 onUnmounted(() => {
   client.removeChannel(channel);
@@ -48,6 +60,6 @@ whenever(data, async () => {
 
 <template>
   <div>
-    <Edit :video="video" :transcribe="transcribe"></Edit>
+    <Edit :video="video" @save="handleSave"></Edit>
   </div>
 </template>

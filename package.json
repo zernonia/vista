@@ -20,6 +20,7 @@
     "@unocss/preset-uno": "^0.47.6",
     "@unocss/reset": "^0.47.6",
     "@unocss/transformer-directives": "^0.47.6",
+    "@vueform/slider": "^2.1.5",
     "@vueuse/core": "^9.6.0",
     "@vueuse/integrations": "^9.6.0",
     "@vueuse/nuxt": "^9.6.0",

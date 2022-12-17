@@ -1,10 +1,22 @@
+@import "@vueform/slider/themes/default.css";
+
+:root {
+  --slider-connect-bg: #3b82f6;
+  --slider-tooltip-bg: #3b82f6;
+  --slider-handle-ring-color: #3b82f630;
+}
+
 img {
   @apply inline-block;
 }
 
-input {
-  @apply w-full border px-2 py-1;
+input[type="number"] {
+  @apply w-full border px-3 py-2 rounded-lg;
 }
 label {
-  @apply text-sm mt-2 mb-1;
+  @apply text-sm mt-3 mb-2 font-medium text-dark-200;
+}
+
+.vc-color-wrap {
+  @apply rounded-lg !w-full !h-10 border !shadow-none;
 }
