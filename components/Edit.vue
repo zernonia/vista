@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import html2canvas from "html2canvas";
+import { chunk } from "@/utils/functions";
 import type { PropType } from "vue";
 import type { Transcribe } from "@/utils/interface";
 
@@ -16,11 +17,6 @@ const { ratio } = usePlayback();
 
 const url = computed(() => (video?.value ? URL.createObjectURL(video.value) : undefined));
 const domRef = ref<HTMLDivElement>();
-
-const chunk = <T>(array: T[], size: number) =>
-  Array.from({ length: Math.ceil(array.length / size) }, (value, index) =>
-    array.slice(index * size, index * size + size)
-  );
 
 const CHUNK_SIZE = 4;
 // todo: need to add frame extension (before & after) on sentence
@@ -78,7 +74,7 @@ const tab = ref<"config" | "transcribe">("config");
         </div>
         <div class="mt-2">
           <TranscribeConfig v-if="tab === 'config'"></TranscribeConfig>
-          <TranscribePanel v-if="tab === 'transcribe'" :chunk="groupedTranscribe"></TranscribePanel>
+          <TranscribePanel v-if="tab === 'transcribe'" :chunks="groupedTranscribe"></TranscribePanel>
         </div>
       </div>
       <div>

@@ -3,7 +3,7 @@ import type { PropType } from "vue";
 import type { Transcribe } from "@/utils/interface";
 
 const props = defineProps({
-  chunk: { type: Array as PropType<Transcribe[][]>, required: true },
+  chunks: { type: Array as PropType<Transcribe[][]>, required: true },
 });
 
 const { currentTime } = usePlayback();
@@ -11,7 +11,7 @@ const { currentTime } = usePlayback();
 
 <template>
   <div class="w-full">
-    <ul v-for="transcribes in chunk">
+    <ul v-for="transcribes in chunks">
       <li class="p-2 border mb-2" @click="currentTime = transcribes[0].start / 1000">
         <div class="flex justify-between text-sm mb-2">
           <span>{{ transcribes[0].start / 1000 }}</span>

@@ -1,4 +1,5 @@
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+import { chunk } from "@/utils/functions";
 import type { FFmpeg } from "@ffmpeg/ffmpeg";
 
 export const useTranscode = () => {
@@ -8,11 +9,45 @@ export const useTranscode = () => {
   const { config } = useConfig();
   const { ratio } = usePlayback();
 
+  const CHUNK_SIZE = 10;
+
   onMounted(() => {
     ffmpeg = createFFmpeg({
       log: true,
     });
   });
+
+  const applyOverlay = (overlay: Blob[], starting_index: number, transcribe: any) => {
+    const baseCmd = ["-i", starting_index === 0 ? "base.mp4" : `output-${starting_index / CHUNK_SIZE}.mp4`];
+    const overlayInput = overlay?.map((b, i) => ["-i", `${i + starting_index}.png`]).flat() ?? [];
+    const overlayCmd = overlay
+      ? [
+          "-filter_complex",
+          overlay
+            .map(
+              (b, i) =>
+                `[${i === 0 ? "0:v" : "v" + i}][${i + 1}:v]overlay=${config.value.style.left * ratio.value}:${
+                  config.value.style.top * ratio.value
+                }:enable='between(t,${transcribe[i + starting_index].start / 1000},${
+                  transcribe[i + starting_index].end / 1000
+                })'[v${i + 1}]`
+            )
+            .join("; "),
+        ]
+      : [];
+    const outputCmd = [
+      "-map",
+      `[v${overlay?.length}]`,
+      "-map",
+      "0:a",
+      "-c:a",
+      "copy",
+      `output-${starting_index / CHUNK_SIZE + 1}.mp4`,
+    ];
+    // const outputCmd = ["-c:v", "copy", "-c:a", "copy", "output.mp4"];
+
+    return ffmpeg.run(...baseCmd, ...overlayInput, ...overlayCmd, ...outputCmd);
+  };
 
   const transcode = async (file?: File | Blob, overlay?: Blob[], transcribe?: any) => {
     try {
@@ -22,39 +57,27 @@ export const useTranscode = () => {
         await ffmpeg.load();
       }
       message.value = "Start transcoding";
+      const start_time = new Date().getTime();
 
       if (overlay) {
         for (let i = 0; i < overlay.length; i++) {
           ffmpeg.FS("writeFile", `${i}.png`, await fetchFile(overlay[i]));
         }
       }
-
       ffmpeg.FS("writeFile", "base.mp4", await fetchFile(file));
-      // overlay && ffmpeg.FS("writeFile", "overlay.mp4", await fetchFile(overlay));
 
-      const baseCmd = ["-i", "base.mp4"];
-      const overlayInput = overlay?.map((b, i) => ["-i", `${i}.png`]).flat() ?? [];
-      const overlayCmd = overlay
-        ? [
-            "-filter_complex",
-            overlay
-              .map(
-                (b, i) =>
-                  `[${i === 0 ? "0:v" : "v" + i}][${i + 1}:v]overlay=${config.value.style.left * ratio.value}:${
-                    config.value.style.top * ratio.value
-                  }:enable='between(t,${transcribe[i].start / 1000},${transcribe[i].end / 1000})'[v${i + 1}]`
-              )
-              .join("; "),
-          ]
-        : [];
-      const outputCmd = ["-map", `[v${overlay?.length}]`, "-map", "0:a", "-c:a", "copy", "output.mp4"];
-      // const outputCmd = ["-c:v", "copy", "-c:a", "copy", "output.mp4"];
+      const overlayChunk = chunk(overlay, CHUNK_SIZE);
 
-      await ffmpeg.run(...baseCmd, ...overlayInput, ...overlayCmd, ...outputCmd);
+      for (let i = 0; i < overlayChunk.length; i++) {
+        await applyOverlay(overlayChunk[i], i * CHUNK_SIZE, transcribe);
+      }
 
       message.value = "Complete transcoding";
-      const data = ffmpeg.FS("readFile", "output.mp4");
+      const data = ffmpeg.FS("readFile", `output-${overlayChunk.length}.mp4`);
       video.value = URL.createObjectURL(new Blob([data.buffer], { type: "video/mp4" }));
+
+      const end_time = new Date().getTime();
+      console.log("Time taken", end_time - start_time / 1000 / 60, "minutes");
     } catch (err) {
       console.log(err);
     }
