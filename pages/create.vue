@@ -7,7 +7,7 @@ const { file, fileName, open } = useFileSystemAccess({
     {
       description: "Videos",
       accept: {
-        "video/*": [".mp4", ".avi", ".mov", ".wmv"],
+        "video/*": [".mp4", ".avi", ".wmv"],
       },
     },
   ],
@@ -45,6 +45,7 @@ const uploadToStorage = async () => {
       .from("projects")
       .insert({
         user_id: user.value?.id,
+        title: title.value,
         video_key: assetData?.path,
         transcription_id: transcriptionData.id,
       })
@@ -68,7 +69,7 @@ const uploadToStorage = async () => {
 <template>
   <div>
     <div class="flex justify-center">
-      <button :class="[url ? 'btn-plain ' : 'btn-primary my-20']" @click="open()">select or drop file</button>
+      <button :class="[url ? 'btn-plain ' : 'btn-primary my-20']" @click="open()">Select/Drop a video (max 15s)</button>
     </div>
 
     <div v-if="file" class="flex flex-col items-center mt-4">
@@ -77,7 +78,7 @@ const uploadToStorage = async () => {
           <video ref="el" class="max-h-screen-sm" :src="url"></video>
 
           <div
-            class="overlay absolute right-0 top-0 h-full bg-opacity-40 transition-all duration-300 ease-in-out border-l-2 border-white border-opacity-50"
+            class="overlay absolute right-0 top-0 h-full bg-opacity-30 transition-all duration-300 ease-in-out border-l-2 border-white border-opacity-50"
             :class="[isProcessing ? 'bg-dark-100' : 'bg-transparent']"
             :style="{ width: isProcessing ? (1 - progress) * 100 + '%' : '100%' }"
           ></div>

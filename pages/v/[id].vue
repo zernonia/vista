@@ -18,7 +18,7 @@ const channel = client
 const video = ref<Blob | File>();
 
 const id = useRoute().params.id.toString();
-const { data } = useAsyncData(async () => {
+const { data } = useAsyncData(id, async () => {
   const { data } = await client.from("projects").select("*").eq("id", id).single();
 
   // if transcription ready, remove websocket
@@ -75,13 +75,10 @@ onMounted(() => {
 
 <template>
   <div>
-    <Edit
-      v-if="!isCompleted"
-      :video="video"
-      @active="isActive = $event"
-      @completed="handleCompleted"
-      @save="handleSave"
-    ></Edit>
+    <div v-if="!isCompleted">
+      <h1 class="text-center mt-4 mb-8 font-bold text-5xl text-dark-50">{{ data?.title }}</h1>
+      <Edit :video="video" @active="isActive = $event" @completed="handleCompleted" @save="handleSave"></Edit>
+    </div>
     <Completed @edit="isCompleted = false" v-else :url="renderedResult"></Completed>
 
     <Overlay :active="isActive">

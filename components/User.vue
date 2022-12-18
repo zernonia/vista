@@ -3,7 +3,7 @@ const user = useSupabaseUser();
 </script>
 
 <template>
-  <div>
+  <NuxtLink to="/home">
     <img
       class="rounded-full w-14"
       referrerpolicy="no-referrer"
@@ -13,5 +13,5 @@ const user = useSupabaseUser();
       v-if="user?.user_metadata?.avatar_url"
     />
     <span v-else>{{ user?.email }}</span>
-  </div>
+  </NuxtLink>
 </template>

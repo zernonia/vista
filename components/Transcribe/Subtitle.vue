@@ -23,7 +23,7 @@ const currentChunk = computed(() =>
 
 <template>
   <div>
-    <ul v-if="chunks" class="w-full flex flex-col">
+    <ul v-if="chunks.length" class="w-full flex flex-col">
       <button
         v-for="transcribes in chunks"
         class="p-2 mb-2 transition rounded-xl hover:bg-gray-50"
