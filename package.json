@@ -25,6 +25,7 @@
     "@vueuse/integrations": "^9.6.0",
     "@vueuse/nuxt": "^9.6.0",
     "html2canvas": "^1.4.1",
+    "motion": "^10.15.3",
     "nuxt": "3.0.0",
     "vue3-colorpicker": "^2.0.11"
   }

@@ -2,10 +2,11 @@ import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { chunk } from "@/utils/functions";
 import type { FFmpeg } from "@ffmpeg/ffmpeg";
 
-export const useTranscode = () => {
+export const useTranscode = createSharedComposable(() => {
   let ffmpeg: FFmpeg;
-  const message = ref("Click Start to Transcode");
+  const message = ref("Starting");
   const video = ref<string>();
+  const progress = ref(0);
   const { config } = useConfig();
   const { ratio } = usePlayback();
 
@@ -52,11 +53,14 @@ export const useTranscode = () => {
   const transcode = async (file?: File | Blob, overlay?: Blob[], transcribe?: any) => {
     try {
       if (!file || !overlay || !transcribe) return;
+
+      progress.value = 0.05;
       message.value = "Loading ffmeg-core.js";
       if (!ffmpeg.isLoaded()) {
         await ffmpeg.load();
       }
-      message.value = "Start transcoding";
+      message.value = "Start saving data in-memory";
+      progress.value = 0.1;
       const start_time = new Date().getTime();
 
       if (overlay) {
@@ -69,9 +73,12 @@ export const useTranscode = () => {
       const overlayChunk = chunk(overlay, CHUNK_SIZE);
 
       for (let i = 0; i < overlayChunk.length; i++) {
+        message.value = `Start trancoding chunk (${i + 1}/${overlayChunk.length})`;
+        progress.value = 0.1 + 0.6 * ((i + 1) / overlayChunk.length);
         await applyOverlay(overlayChunk[i], i * CHUNK_SIZE, transcribe);
       }
 
+      progress.value = 1;
       message.value = "Complete transcoding";
       const data = ffmpeg.FS("readFile", `output-${overlayChunk.length}.mp4`);
       video.value = URL.createObjectURL(new Blob([data.buffer], { type: "video/mp4" }));
@@ -80,11 +87,14 @@ export const useTranscode = () => {
       console.log("Time taken", (end_time - start_time) / 1000 / 60, "minutes");
     } catch (err) {
       console.log(err);
+      message.value = "Something wrong. Please contact Zernonia";
     }
   };
 
   return {
     transcode,
     video,
+    message,
+    progress,
   };
-};
+});

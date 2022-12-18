@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import html2canvas from "html2canvas";
-import { chunk } from "@/utils/functions";
+import { chunk, toBlob, wait } from "@/utils/functions";
 import type { PropType } from "vue";
 
 const props = defineProps({
   video: { type: Object as PropType<Blob | File> },
 });
-const emits = defineEmits(["save"]);
+const emits = defineEmits(["save", "active"]);
 
 const { video } = toRefs(props);
 
 const transcribe = useTranscription();
-const client = useSupabase();
-const { transcode, video: result } = useTranscode();
+const { transcode } = useTranscode();
 const { computedStyle, computedHighlightStyle } = useConfig();
 const { ratio } = usePlayback();
 
@@ -27,21 +26,13 @@ const groupedTranscribe = computed(() =>
 
 const step = ref(0);
 const blobs = ref<Blob[]>([]);
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-const toBlob = (canvas: HTMLCanvasElement): Promise<Blob> =>
-  new Promise((resolve, reject) => {
-    canvas.toBlob((result) => {
-      resolve(result as Blob);
-    });
-  });
 
 const magicClick = async () => {
   if (!domRef.value) return;
   for (let i = 0; i < transcribe.value.length; i++) {
     step.value = i;
 
-    await sleep(1);
+    await wait(1);
     const c = await html2canvas(domRef.value, { backgroundColor: null });
     const result = await toBlob(c);
     console.log(domRef.value.innerHTML);
@@ -50,9 +41,18 @@ const magicClick = async () => {
 };
 
 const handleTranscode = async () => {
-  emits("save");
-  await magicClick();
-  transcode(video?.value, blobs.value, groupedTranscribe.value.flat());
+  try {
+    emits("save");
+    emits("active", true);
+    await wait(500);
+    await magicClick();
+    await transcode(video?.value, blobs.value, groupedTranscribe.value.flat());
+    console.log("completed!!!");
+
+    emits("active", false);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const tab = ref<"config" | "transcribe">("config");
@@ -92,6 +92,11 @@ const tab = ref<"config" | "transcribe">("config");
             <TranscribeSubtitle v-if="tab === 'transcribe'" :chunks="groupedTranscribe"></TranscribeSubtitle>
           </div>
         </div>
+
+        <div class="mt-20 mx-6">
+          <button class="btn btn-plain mr-4" @click="emits('save')">Save</button>
+          <button class="btn btn-primary" @click="handleTranscode">Transcode</button>
+        </div>
       </div>
       <div>
         <Preview :url="url">
@@ -100,8 +105,5 @@ const tab = ref<"config" | "transcribe">("config");
         <PreviewControls></PreviewControls>
       </div>
     </div>
-
-    <button class="btn btn-primary" @click="emits('save')">Save</button>
-    <button class="btn btn-primary" @click="handleTranscode">Transcode</button>
   </div>
 </template>

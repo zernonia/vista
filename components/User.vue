@@ -10,6 +10,8 @@ const user = useSupabaseUser();
       crossorigin="anonymous"
       :src="user?.user_metadata?.avatar_url"
       :alt="user?.email"
+      v-if="user?.user_metadata?.avatar_url"
     />
+    <span v-else>{{ user?.email }}</span>
   </div>
 </template>

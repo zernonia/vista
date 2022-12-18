@@ -10,7 +10,8 @@ img {
   @apply inline-block;
 }
 
-input[type="number"] {
+input[type="number"],
+input[type="text"] {
   @apply w-full border px-3 py-2 rounded-lg;
 }
 label {

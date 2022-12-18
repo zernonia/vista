@@ -2,7 +2,7 @@
 const client = useSupabase();
 
 const { data } = useAsyncData(async () => {
-  const { data } = await client.from("projects").select("*");
+  const { data } = await client.from("projects").select("id, title");
   return data;
 });
 </script>
