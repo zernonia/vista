@@ -67,9 +67,11 @@ const uploadToStorage = async () => {
 
 <template>
   <div>
-    <button @click="open()">select or drop file</button>
+    <div class="flex justify-center">
+      <button :class="[url ? 'btn-plain ' : 'btn-primary my-20']" @click="open()">select or drop file</button>
+    </div>
 
-    <div v-if="file" class="flex flex-col items-center">
+    <div v-if="file" class="flex flex-col items-center mt-4">
       <div class="max-w-screen-md m-auto">
         <button @click="playing = !playing" class="border relative rounded-3xl overflow-hidden">
           <video ref="el" class="max-h-screen-sm" :src="url"></video>

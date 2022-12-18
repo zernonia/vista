@@ -6,7 +6,7 @@ import type { PropType } from "vue";
 const props = defineProps({
   video: { type: Object as PropType<Blob | File> },
 });
-const emits = defineEmits(["save", "active"]);
+const emits = defineEmits(["save", "active", "completed"]);
 
 const { video } = toRefs(props);
 
@@ -47,9 +47,7 @@ const handleTranscode = async () => {
     await wait(500);
     await magicClick();
     await transcode(video?.value, blobs.value, groupedTranscribe.value.flat());
-    console.log("completed!!!");
-
-    emits("active", false);
+    emits("completed");
   } catch (err) {
     console.log(err);
   }
@@ -68,7 +66,7 @@ const tab = ref<"config" | "transcribe">("config");
       >
     </div>
 
-    <div class="flex flex-col-reverse md:flex-row">
+    <div class="flex flex-col-reverse md:flex-row items-center">
       <div class="flex flex-col mr-6 mt-20 w-full">
         <div class="grid grid-cols-2 rounded-full bg-gray-100 p-1.5 mx-6 overflow-hidden">
           <button

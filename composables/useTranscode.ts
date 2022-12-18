@@ -85,6 +85,10 @@ export const useTranscode = createSharedComposable(() => {
 
       const end_time = new Date().getTime();
       console.log("Time taken", (end_time - start_time) / 1000 / 60, "minutes");
+
+      setTimeout(() => {
+        progress.value = 0;
+      }, 500);
     } catch (err) {
       console.log(err);
       message.value = "Something wrong. Please contact Zernonia";

@@ -37,7 +37,7 @@ const handleSave = async () => {
     .from("projects")
     .update({
       // @ts-ignore
-      words: transcribe.value,
+      words: transcribe.value.length ? transcribe.value : undefined,
       config: config.value,
     })
     .eq("id", id);
@@ -58,15 +58,33 @@ whenever(data, async () => {
   if (result.data) video.value = result.data;
 });
 
-const active = ref(false);
+const isActive = ref(false);
+const isCompleted = ref(false);
+
+const handleCompleted = () => {
+  isCompleted.value = true;
+  isActive.value = false;
+};
+
+onMounted(() => {
+  window.onbeforeunload = function () {
+    if (isActive.value) return "You haven't saved your changes.";
+  };
+});
 </script>
 
 <template>
   <div>
-    <Edit v-if="!renderedResult" :video="video" @active="active = $event" @save="handleSave"></Edit>
-    <Completed v-else :url="renderedResult"></Completed>
+    <Edit
+      v-if="!isCompleted"
+      :video="video"
+      @active="isActive = $event"
+      @completed="handleCompleted"
+      @save="handleSave"
+    ></Edit>
+    <Completed @edit="isCompleted = false" v-else :url="renderedResult"></Completed>
 
-    <Overlay :active="active">
+    <Overlay :active="isActive">
       <div class="flex flex-col">
         <div class="flex rounded-full p-4 bg-white w-80 shadow-xl">
           <Loading class="w-12 h-12 text-blue-500 animate-spin"></Loading>
