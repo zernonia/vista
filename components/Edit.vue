@@ -13,7 +13,7 @@ const { video } = toRefs(props);
 const transcribe = useTranscription();
 const { transcode } = useTranscode();
 const { computedStyle, computedHighlightStyle } = useConfig();
-const { ratio } = usePlayback();
+const { currentTime, ratio } = usePlayback();
 
 const url = computed(() => (video?.value ? URL.createObjectURL(video.value) : undefined));
 const domRef = ref<HTMLDivElement>();
@@ -22,6 +22,11 @@ const CHUNK_SIZE = 4;
 // todo: need to add frame extension (before & after) on sentence
 const groupedTranscribe = computed(() =>
   chunk(transcribe.value, CHUNK_SIZE).map((i) => i.map((j, index) => ({ ...j, end: i[index + 1]?.start ?? j.end })))
+);
+const currentChunk = computed(() =>
+  groupedTranscribe.value.find(
+    (i) => currentTime.value >= i[0].start / 1000 && currentTime.value <= i[i.length - 1]?.end / 1000
+  )
 );
 
 const step = ref(0);
@@ -60,8 +65,8 @@ const tab = ref<"config" | "transcribe">("config");
   <div>
     <div ref="domRef" class="absolute text-shadow-sm -z-1" :style="[computedStyle, { transform: `scale(${ratio})` }]">
       <span
-        :style="item.text === transcribe[step].text ? computedHighlightStyle : undefined"
-        v-for="item in groupedTranscribe.find((i) => i.find((j) => j.text === transcribe[step].text))"
+        :style="item.start === transcribe[step].start ? computedHighlightStyle : undefined"
+        v-for="item in groupedTranscribe.find((i) => i.find((j) => j.start === transcribe[step].start))"
         >{{ item.text }}&nbsp;</span
       >
     </div>

@@ -38,6 +38,6 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ["vue3-colorpicker", "vue3-angle"],
+    transpile: process.env.NODE_ENV === "development" ? [] : ["vue3-colorpicker", "vue3-angle"],
   },
 });

@@ -72,8 +72,9 @@ definePageMeta({
 
 <template>
   <div>
+    <h1 class="my-4">Create</h1>
     <div class="flex justify-center">
-      <button :class="[url ? 'btn-plain ' : 'btn-primary my-20']" @click="open()">
+      <button :class="[url ? 'btn-plain' : 'btn-primary my-10']" @click="open()">
         Select/Drop a video (max 15s, for now)
       </button>
     </div>
