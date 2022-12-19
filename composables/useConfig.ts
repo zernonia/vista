@@ -1,5 +1,5 @@
 export const useConfig = () => {
-  const config = useState(() => ({
+  const defaultConfig = {
     style: {
       left: 100,
       top: 100,
@@ -14,7 +14,9 @@ export const useConfig = () => {
     highlight_style: {
       color: "#ffffff",
     },
-  }));
+  };
+
+  const config = useState(() => defaultConfig);
 
   const computedStyle = computed(() => ({
     ...config.value.style,
@@ -27,9 +29,12 @@ export const useConfig = () => {
 
   const computedHighlightStyle = computed(() => config.value.highlight_style);
 
+  const resetConfig = () => (config.value = defaultConfig);
+
   return {
     config,
     computedStyle,
     computedHighlightStyle,
+    resetConfig,
   };
 };

@@ -1,5 +1,5 @@
 <template>
-  <svg width="32" height="32" viewBox="0 0 24 24">
+  <svg class="w-12 h-12 text-blue-500 animate-spin" width="32" height="32" viewBox="0 0 24 24">
     <g fill="currentColor">
       <path
         fill-rule="evenodd"

@@ -6,7 +6,7 @@ import type { PropType } from "vue";
 const props = defineProps({
   video: { type: Object as PropType<Blob | File> },
 });
-const emits = defineEmits(["save", "active", "completed"]);
+const emits = defineEmits(["save", "active", "completed", "error"]);
 
 const { video } = toRefs(props);
 
@@ -55,6 +55,7 @@ const handleTranscode = async () => {
     emits("completed");
   } catch (err) {
     console.log(err);
+    emits("error");
   }
 };
 
@@ -98,7 +99,7 @@ const tab = ref<"config" | "transcribe">("config");
 
         <div class="mt-20 mx-6">
           <button class="btn btn-plain mr-4" @click="emits('save')">Save</button>
-          <button class="btn btn-primary" @click="handleTranscode">Transcode</button>
+          <button class="btn btn-primary" :disabled="!video" @click="handleTranscode">Transcode</button>
         </div>
       </div>
       <div>

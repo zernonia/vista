@@ -92,6 +92,7 @@ export const useTranscode = createSharedComposable(() => {
     } catch (err) {
       console.log(err);
       message.value = "Something wrong. Please contact Zernonia";
+      throw Error(err);
     }
   };
 

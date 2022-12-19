@@ -2,7 +2,7 @@
 const client = useSupabase();
 const inMemoryFile = useInMemoryFile();
 const transcribe = useTranscription();
-const { config } = useConfig();
+const { config, resetConfig } = useConfig();
 const { message, progress, video: renderedResult } = useTranscode();
 
 const channel = client
@@ -18,15 +18,13 @@ const channel = client
 const video = ref<Blob | File>();
 
 const id = useRoute().params.id.toString();
-const { data } = useAsyncData(id, async () => {
+const { data, pending } = useAsyncData(id, async () => {
   const { data } = await client.from("projects").select("*").eq("id", id).single();
 
   // if transcription ready, remove websocket
   if (data?.words) {
     // @ts-ignore
     transcribe.value = data.words;
-    // @ts-ignore
-    if (data.config) config.value = data.config;
     client.removeChannel(channel);
   }
   return data;
@@ -58,12 +56,27 @@ whenever(data, async () => {
   if (result.data) video.value = result.data;
 });
 
+watch(
+  data,
+  () => {
+    resetConfig();
+    // @ts-ignore
+    if (data.value?.config) config.value = data.value.config;
+  },
+  { immediate: true }
+);
+
 const isActive = ref(false);
 const isCompleted = ref(false);
+const isSomethingWrong = ref(false);
 
 const handleCompleted = () => {
   isCompleted.value = true;
   isActive.value = false;
+};
+
+const handleError = async () => {
+  isSomethingWrong.value = true;
 };
 
 onMounted(() => {
@@ -81,16 +94,38 @@ useCustomHead(computed(() => `Edit: ${data.value?.title ?? ""}`));
 
 <template>
   <div>
-    <div v-if="!isCompleted">
+    <div v-if="pending && !data" class="my-20 flex items-center justify-center">
+      <Loading></Loading>
+    </div>
+    <div v-else-if="!isCompleted">
       <h1 class="mt-4 mb-8">{{ data?.title }}</h1>
-      <Edit :video="video" @active="isActive = $event" @completed="handleCompleted" @save="handleSave"></Edit>
+      <Edit
+        :video="video"
+        @active="isActive = $event"
+        @completed="handleCompleted"
+        @save="handleSave"
+        @error="handleError"
+      ></Edit>
     </div>
     <Completed @edit="isCompleted = false" v-else :url="renderedResult"></Completed>
 
     <Overlay :active="isActive">
-      <div class="flex flex-col">
+      <div class="flex" v-if="isSomethingWrong">
+        <div>
+          <p>Sorry, something is wrong</p>
+          <p>Please try create and transcode with this video (for demo purposes).</p>
+
+          <a
+            href="https://raw.githubusercontent.com/zernonia/vista/main/assets/original.mp4"
+            target="_blank"
+            class="mt-4 underline text-blue-500"
+            >Demo video</a
+          >
+        </div>
+      </div>
+      <div v-else class="flex flex-col">
         <div class="flex rounded-full p-4 bg-white w-80 shadow-xl">
-          <Loading class="w-12 h-12 text-blue-500 animate-spin"></Loading>
+          <Loading></Loading>
           <div class="flex flex-col ml-6 text-blue-500">
             <p class="mt-1">{{ message }}</p>
             <p class="text-sm font-semibold">{{ (progress * 100).toFixed(0) }}%</p>
