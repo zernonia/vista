@@ -21,3 +21,7 @@ label {
 .vc-color-wrap {
   @apply rounded-lg !w-full !h-10 border !shadow-none;
 }
+
+h1 {
+  @apply text-center font-bold text-5xl text-dark-50;
+}

@@ -1,5 +1,6 @@
 import transformerDirective from "@unocss/transformer-directives";
 import { defineNuxtConfig } from "nuxt/config";
+import { Database } from "@/utils/database.types";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({

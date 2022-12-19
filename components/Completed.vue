@@ -10,7 +10,7 @@ const emits = defineEmits(["edit"]);
 
 <template>
   <div class="w-max mx-auto my-20">
-    <h1 class="text-center mb-16 font-bold text-5xl text-dark-50">Completed! 🎉</h1>
+    <h1 class="mb-16">Completed! 🎉</h1>
 
     <Preview :url="url" />
     <PreviewControls />

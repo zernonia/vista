@@ -11,5 +11,9 @@ const login = async (provider: Provider) => {
 </script>
 
 <template>
-  <button @click="login('google')">Login with Google</button>
+  <div class="flex flex-col items-center">
+    <h1 class="mt-20 mb-12">Login</h1>
+
+    <button @click="login('google')" class="btn-primary">Login with Google</button>
+  </div>
 </template>

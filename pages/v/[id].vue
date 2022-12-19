@@ -71,12 +71,16 @@ onMounted(() => {
     if (isActive.value) return "You haven't saved your changes.";
   };
 });
+
+definePageMeta({
+  middleware: "auth",
+});
 </script>
 
 <template>
   <div>
     <div v-if="!isCompleted">
-      <h1 class="text-center mt-4 mb-8 font-bold text-5xl text-dark-50">{{ data?.title }}</h1>
+      <h1 class="mt-4 mb-8">{{ data?.title }}</h1>
       <Edit :video="video" @active="isActive = $event" @completed="handleCompleted" @save="handleSave"></Edit>
     </div>
     <Completed @edit="isCompleted = false" v-else :url="renderedResult"></Completed>

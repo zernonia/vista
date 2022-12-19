@@ -64,6 +64,10 @@ const uploadToStorage = async () => {
     console.log(err);
   }
 };
+
+definePageMeta({
+  middleware: "auth",
+});
 </script>
 
 <template>
