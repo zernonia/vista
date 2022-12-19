@@ -3,7 +3,12 @@ import type { Provider } from "@supabase/gotrue-js";
 const client = useSupabaseAuthClient();
 
 const login = async (provider: Provider) => {
-  const { error } = await client.auth.signInWithOAuth({ provider });
+  const { error } = await client.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: window.location.origin + "/home",
+    },
+  });
   if (error) {
     console.log("Something went wrong !");
   }

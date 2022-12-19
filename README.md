@@ -36,8 +36,8 @@ Vista is...
 - [Nuxt 3](https://v3.nuxtjs.org/)
 - [Supabase](https://supabase.com)
 - [UnoCss](https://uno.antfu.me/)
-- [Vercel - Hosting & Domain](https://vercel.com)
 - [AssemblyAI](https://www.assemblyai.com/)
+- [FFmpeg.wasm](https://ffmpegwasm.netlify.app/)
 
 ## 🌎 Setup
 

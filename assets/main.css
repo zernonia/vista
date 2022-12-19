@@ -12,14 +12,14 @@ img {
 
 input[type="number"],
 input[type="text"] {
-  @apply w-full border px-3 py-2 rounded-lg;
+  @apply w-full border shadow-sm px-3 py-2 rounded-lg;
 }
 label {
   @apply text-sm mt-3 mb-2 font-medium text-dark-200;
 }
 
 .vc-color-wrap {
-  @apply rounded-lg !w-full !h-10 border !shadow-none;
+  @apply rounded-lg !w-full !h-10 border shadow-sm !shadow-none;
 }
 
 h1 {
