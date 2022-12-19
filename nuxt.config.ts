@@ -36,4 +36,8 @@ export default defineNuxtConfig({
   routeRules: {
     "/v/**": { ssr: false },
   },
+
+  build: {
+    transpile: ["vue3-colorpicker", "vue3-angle"],
+  },
 });
