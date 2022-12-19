@@ -75,6 +75,8 @@ onMounted(() => {
 definePageMeta({
   middleware: "auth",
 });
+
+useCustomHead(computed(() => `Edit: ${data.value?.title ?? ""}`));
 </script>
 
 <template>

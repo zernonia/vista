@@ -20,11 +20,27 @@
 
 <br/>
 
-![vista - automatic, animated subtitle generation for short-form video](public/hero.png)
+![vista - automatic, animated subtitle generation for short-form video](public/og.png)
 
-## Introduction
+## Story
 
-Vista is...
+Vista is my Hackathon submission for [Supabase Launch week 6](https://supabase.com/launch-week). It was inspired by those animated subtitle while scrolling through Youtube Shorts, and I always wanted to play with [ffmpeg](https://ffmpeg.org/), and this serves as a good opportunity!
+
+This ends up a super challenging task:
+
+1. I need to run ffmpeg for video encoding, but hosting a server will required alot of coding & maintainance, thus resorting to use ffmpeg-wasm, which could be use on modern browser that supports wasm.
+
+2. Perform speech-to-text is not an easy task, to speed up MVP, I've utilized AssemblyAI API for the video transcription.
+
+3. Because speech-to-text is an async task, I've combined [Supabase Edge Function](https://github.com/zernonia/vista/tree/main/supabase/functions/transcribe-webhook) as webhook when the process is done, then use [Supabase Realtime](https://github.com/zernonia/vista/blob/main/pages/v/%5Bid%5D.vue#L8) to populate the subtitle.
+
+## Supabase Usage
+
+1. Supabase Auth - to handle user and their storage bucket
+2. Supabase DB - to store projects data
+3. Supabase Storage - to store user's video (with policies)
+4. Supabase Realtime - to populate the UI anytime when subtitle is ready
+5. Supabase Edge Function - trigger AssemblyAI transcription, and act as webhook
 
 ## 🚀 Features
 
@@ -117,9 +133,6 @@ Contributions are what make the open source community such an amazing place to b
 
 1. [Nuxt 3 - Awesome framework](https://v3.nuxtjs.org/)
 1. [Supabase - Super easy setup (as always)](https://supabase.com)
-1. [Tiptap - Awesome editor](https://tiptap.dev/)
-1. [Vercel's Platform Starter Kit - Subdomain/Custom domain](https://github.com/vercel/platforms)
-1. [Vercel's new og generation](https://github.com/vercel/satori)
 
 ## Author
 

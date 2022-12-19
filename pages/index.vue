@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+useCustomHead("Vista | Add animated subtitle to your video automatically");
+</script>
 
 <template>
   <div>
