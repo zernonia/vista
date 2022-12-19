@@ -20,8 +20,9 @@ const client = useSupabase();
 const { el, duration, playing } = usePlayback();
 const inMemoryFile = useInMemoryFile();
 
+const DURATION_LIMIT = 15;
 const title = ref("");
-const isOffLimit = computed(() => duration.value >= 15);
+const isOffLimit = computed(() => duration.value >= DURATION_LIMIT);
 
 const url = computed(() => (file.value ? URL.createObjectURL(file.value) : undefined));
 
@@ -75,7 +76,7 @@ definePageMeta({
     <h1 class="my-4">Create</h1>
     <div class="flex justify-center">
       <button :class="[url ? 'btn-plain' : 'btn-primary my-10']" @click="open()">
-        Select/Drop a video (max 15s, for now)
+        Select/Drop a video (max {{ DURATION_LIMIT }}s, for now)
       </button>
     </div>
 
@@ -93,9 +94,11 @@ definePageMeta({
         <PreviewControls></PreviewControls>
       </div>
 
-      <div v-if="isOffLimit" class="text-red font-semibold my-4">Video is too long, currently only max 15 seconds.</div>
+      <div v-if="isOffLimit" class="text-red font-semibold my-4">
+        Video is too long, currently only max {{ DURATION_LIMIT }} seconds.
+      </div>
 
-      <div class="mt-12 flex items-center">
+      <div v-if="!isProcessing" class="mt-12 flex items-center">
         <input type="text" class="mr-4 w-full !rounded-full !px-4 !py-3" v-model="title" placeholder="Project title" />
         <button :disabled="isOffLimit || !title" @click="uploadToStorage" class="btn-primary">Upload</button>
       </div>

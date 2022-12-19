@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Provider } from "@supabase/gotrue-js";
 const client = useSupabaseAuthClient();
+const user = useSupabaseUser();
 
 const login = async (provider: Provider) => {
   const { error } = await client.auth.signInWithOAuth({
@@ -13,6 +14,14 @@ const login = async (provider: Provider) => {
     console.log("Something went wrong !");
   }
 };
+
+watch(
+  user,
+  () => {
+    if (user.value?.id) navigateTo("/home");
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
