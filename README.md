@@ -76,7 +76,8 @@ Yarn
    cd vista
    yarn install
    ```
-3. Run local development instance
+3. Set up `.env` (check `.env.example`)
+4. Run local development instance
    ```sh
    yarn dev
    ```
