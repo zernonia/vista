@@ -28,7 +28,7 @@ Vista is my Hackathon submission for [Supabase Launch week 6](https://supabase.c
 
 This ends up a super challenging task:
 
-1. I need to run ffmpeg for video encoding, but hosting a server will required alot of coding & maintainance, thus resorting to use ffmpeg-wasm, which could be use on modern browser that supports wasm.
+1. I need to run ffmpeg for video encoding, but hosting a server will required a lot of coding & maintenance, thus resorting to use ffmpeg-wasm, which could be use on modern browser that supports wasm.
 
 2. Perform speech-to-text is not an easy task, to speed up MVP, I've utilized AssemblyAI API for the video transcription.
 
