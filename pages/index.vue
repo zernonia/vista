@@ -13,13 +13,29 @@ useCustomHead("Vista | Add animated subtitle to your video automatically");
     </div>
 
     <NuxtLink class="flex items-center justify-center" to="/create">
-      <video src="~~/assets/original.mp4" autoplay muted class="h-128 w-min rounded-3xl shadow-xl" loop></video>
+      <video
+        src="https://res.cloudinary.com/zernonia/video/upload/v1673245844/Projects/Vista/original_aopjoc.mp4"
+        autoplay
+        referrerpolicy="no-referrer"
+        crossorigin="anonymous"
+        muted
+        class="h-128 w-min rounded-3xl shadow-xl"
+        loop
+      ></video>
 
       <div class="mx-10">
         <div class="i-bx-bxs-right-arrow-circle text-6xl text-blue-500"></div>
       </div>
 
-      <video src="~~/assets/demo.mp4" autoplay muted class="h-128 w-min rounded-3xl shadow-xl" loop></video>
+      <video
+        src="https://res.cloudinary.com/zernonia/video/upload/v1673245846/Projects/Vista/demo_vu9fqd.mp4"
+        autoplay
+        muted
+        referrerpolicy="no-referrer"
+        crossorigin="anonymous"
+        class="h-128 w-min rounded-3xl shadow-xl"
+        loop
+      ></video>
     </NuxtLink>
   </div>
 </template>
